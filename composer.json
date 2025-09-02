@@ -1,0 +1,25 @@
+{
+  "name": "php-ai/php-ml-examples",
+  "type": "project",
+  "description": "Examples of the use of PHP-ML library",
+  "keywords": [
+    "machine learning",
+    "pattern recognition",
+    "computational learning theory",
+    "artificial intelligence"
+  ],
+  "homepage": "https://github.com/php-ai/php-ml-examples",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Arkadiusz Kondas",
+      "email": "arkadiusz.kondas@gmail.com"
+    }
+  ],
+  "require": {
+    "php-ai/php-ml": "0.8.0"
+  },
+  "require-dev": {
+    "friendsofphp/php-cs-fixer": "^2.14"
+  }
+}
