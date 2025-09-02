@@ -4,18 +4,17 @@ declare(strict_types=1);
 
 namespace PhpmlExamples;
 
-include 'vendor/autoload.php';
+include __DIR__ . '/../vendor/autoload.php';
 
 use Phpml\CrossValidation\StratifiedRandomSplit;
 use Phpml\Dataset\Demo\WineDataset;
 use Phpml\Metric\Accuracy;
-use Phpml\Regression\SVR;
-use Phpml\SupportVectorMachine\Kernel;
+use Phpml\Regression\LeastSquares;
 
 $dataset = new WineDataset();
 $split = new StratifiedRandomSplit($dataset);
 
-$regression = new SVR(Kernel::RBF, 3, 0.1, 10);
+$regression = new LeastSquares();
 $regression->train($split->getTrainSamples(), $split->getTrainLabels());
 
 $predicted = $regression->predict($split->getTestSamples());

@@ -1,25 +1,25 @@
 {
-  "name": "php-ai/php-ml-examples",
+  "name": "insightlab/ml-hub",
   "type": "project",
-  "description": "Examples of the use of PHP-ML library",
+  "description": "InsightLab ML Hub - Frontend para ejemplos PHP-ML",
   "keywords": [
     "machine learning",
     "pattern recognition",
-    "computational learning theory",
-    "artificial intelligence"
+    "artificial intelligence",
+    "php-ml",
+    "web interface"
   ],
-  "homepage": "https://github.com/php-ai/php-ml-examples",
   "license": "MIT",
-  "authors": [
-    {
-      "name": "Arkadiusz Kondas",
-      "email": "arkadiusz.kondas@gmail.com"
-    }
-  ],
   "require": {
-    "php-ai/php-ml": "0.8.0"
+    "php": "^8.1",
+    "coral-media/php-ml": "^0.10"
   },
   "require-dev": {
-    "friendsofphp/php-cs-fixer": "^2.14"
+    "friendsofphp/php-cs-fixer": "^3.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "InsightLab\\": "src/"
+    }
   }
 }

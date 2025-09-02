@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhpmlExamples;
 
-include 'vendor/autoload.php';
+include __DIR__ . '/../vendor/autoload.php';
 
 use Phpml\Dataset\CsvDataset;
 use Phpml\Dataset\ArrayDataset;
@@ -13,10 +13,9 @@ use Phpml\Tokenization\WordTokenizer;
 use Phpml\CrossValidation\StratifiedRandomSplit;
 use Phpml\FeatureExtraction\TfIdfTransformer;
 use Phpml\Metric\Accuracy;
-use Phpml\Classification\SVC;
-use Phpml\SupportVectorMachine\Kernel;
+use Phpml\Classification\NaiveBayes;
 
-$dataset = new CsvDataset('data/languages.csv', 1);
+$dataset = new CsvDataset(__DIR__ . '/../data/languages.csv', 1);
 $vectorizer = new TokenCountVectorizer(new WordTokenizer());
 $tfIdfTransformer = new TfIdfTransformer();
 
@@ -35,7 +34,7 @@ $dataset = new ArrayDataset($samples, $dataset->getTargets());
 
 $randomSplit = new StratifiedRandomSplit($dataset, 0.1);
 
-$classifier = new SVC(Kernel::RBF, 10000);
+$classifier = new NaiveBayes();
 $classifier->train($randomSplit->getTrainSamples(), $randomSplit->getTrainLabels());
 
 $predictedLabels = $classifier->predict($randomSplit->getTestSamples());

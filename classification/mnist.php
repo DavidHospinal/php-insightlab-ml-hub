@@ -9,7 +9,7 @@ use Phpml\Dataset\MnistDataset;
 use Phpml\Metric\Accuracy;
 use Phpml\ModelManager;
 
-require 'vendor/autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
 
 function convert($size)
 {

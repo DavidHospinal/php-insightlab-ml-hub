@@ -6,7 +6,7 @@ namespace PhpmlExamples;
 
 use Phpml\Clustering\KMeans;
 
-require 'vendor/autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
 
 $lines = file(__DIR__.'/../data/crimes-robbery.csv');
 foreach ($lines as &$line) {

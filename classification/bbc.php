@@ -13,7 +13,7 @@ use Phpml\FeatureExtraction\TokenCountVectorizer;
 use Phpml\Metric\Accuracy;
 use Phpml\Tokenization\NGramTokenizer;
 
-include 'vendor/autoload.php';
+include __DIR__ . '/../vendor/autoload.php';
 
 $dataset = new FilesDataset(__DIR__.'/../data/bbc');
 $split = new StratifiedRandomSplit($dataset, 0.3);

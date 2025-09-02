@@ -8,7 +8,7 @@ use Phpml\Classification\KNearestNeighbors;
 use Phpml\Dataset\CsvDataset;
 use Phpml\Math\Distance\Minkowski;
 
-include 'vendor/autoload.php';
+include __DIR__ . '/../vendor/autoload.php';
 
 $minLat = 41.34343606848294;
 $maxLat = 57.844750992891;

@@ -6,7 +6,7 @@ namespace PhpmlExamples;
 
 use Phpml\ModelManager;
 
-include 'vendor/autoload.php';
+include __DIR__ . '/../vendor/autoload.php';
 
 $start = microtime(true);
 $modelManager = new ModelManager();

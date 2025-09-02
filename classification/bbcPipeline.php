@@ -16,7 +16,7 @@ use Phpml\Pipeline;
 use Phpml\SupportVectorMachine\Kernel;
 use Phpml\Tokenization\NGramTokenizer;
 
-include 'vendor/autoload.php';
+include __DIR__ . '/../vendor/autoload.php';
 
 $dataset = new FilesDataset(__DIR__.'/../data/bbc');
 $split = new StratifiedRandomSplit($dataset, 0.1);

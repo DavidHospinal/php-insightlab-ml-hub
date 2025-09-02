@@ -7,7 +7,7 @@ namespace PhpmlExamples;
 use Phpml\Classification\KNearestNeighbors;
 use Phpml\Dataset\CsvDataset;
 
-include 'vendor/autoload.php';
+include __DIR__ . '/../vendor/autoload.php';
 
 $dataset = new CsvDataset(__DIR__.'/../data/air.csv', 2, false, ';');
 

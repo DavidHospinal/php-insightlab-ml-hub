@@ -7,7 +7,7 @@ namespace PhpmlExamples;
 use Phpml\Clustering\KMeans;
 use Phpml\Math\Distance\Euclidean;
 
-require 'vendor/autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
 
 $lines = file(__DIR__.'/../data/syntetic-g.csv');
 foreach ($lines as &$line) {
