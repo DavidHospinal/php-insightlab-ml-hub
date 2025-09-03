@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: php-insightlab-ml-hub
+    env: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    envVars:
+      - key: PHP_VERSION
+        value: "8.2"
+    healthCheckPath: /

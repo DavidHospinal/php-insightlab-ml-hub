@@ -1,0 +1,19 @@
+RewriteEngine On
+
+# Redirect root to frontend
+RewriteRule ^$ /frontend/ [R=301,L]
+
+# Handle frontend routes
+RewriteRule ^frontend/$ /frontend/index.html [L]
+
+# Handle API routes
+RewriteRule ^backend/api/(.*)$ /backend/api/$1 [L]
+
+# Handle static files
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule ^(.*)$ $1 [L]
+
+# All other requests go through index.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ /index.php [QSA,L]
