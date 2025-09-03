@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PHP InsightLab ML Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .card-hover {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .loading {
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .cluster-canvas {
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <header class="gradient-bg shadow-lg">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <div class="bg-white rounded-lg p-2">
+                        <svg class="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold text-white">PHP InsightLab ML Hub</h1>
+                        <p class="text-indigo-200 text-sm">Plataforma de Machine Learning con PHP-ML</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4 text-white">
+                    <button id="aboutBtn" class="bg-white/20 hover:bg-white/30 px-3 py-1 rounded-lg text-sm transition">
+                        ℹ️ Acerca de
+                    </button>
+                    <button id="licenseBtn" class="bg-white/20 hover:bg-white/30 px-3 py-1 rounded-lg text-sm transition">
+                        📄 Licencia
+                    </button>
+                    <div class="text-right">
+                        <div class="text-sm opacity-90">Algoritmos Activos</div>
+                        <div class="text-xl font-bold" id="activeAlgorithms">4</div>
+                    </div>
+                    <div class="w-8 h-8 bg-green-400 rounded-full flex items-center justify-center">
+                        <div class="w-3 h-3 bg-white rounded-full animate-pulse"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-6 py-8">
+        <!-- Stats Dashboard -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-xl shadow-md p-6 card-hover">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-sm">Detección de Idioma</p>
+                        <p class="text-2xl font-bold text-gray-900" id="languageCount">0</p>
+                    </div>
+                    <div class="bg-blue-100 p-3 rounded-lg">
+                        <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow-md p-6 card-hover">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-sm">Filtro de Spam</p>
+                        <p class="text-2xl font-bold text-gray-900" id="spamCount">0</p>
+                    </div>
+                    <div class="bg-red-100 p-3 rounded-lg">
+                        <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow-md p-6 card-hover">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-sm">Calidad del Vino</p>
+                        <p class="text-2xl font-bold text-gray-900" id="wineCount">0</p>
+                    </div>
+                    <div class="bg-purple-100 p-3 rounded-lg">
+                        <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow-md p-6 card-hover">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-sm">Clustering K-Means</p>
+                        <p class="text-2xl font-bold text-gray-900" id="clusterCount">0</p>
+                    </div>
+                    <div class="bg-green-100 p-3 rounded-lg">
+                        <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14-7l2 2-2 2m2-2a9 9 0 01-9 9M5 13l2-2-2-2m2 2a9 9 0 009-9"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Algorithm Modules -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            
+            <!-- Language Detection Module -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <div class="flex items-center mb-6">
+                    <div class="bg-blue-100 p-3 rounded-lg mr-4">
+                        <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-900">Detección de Idioma</h3>
+                        <p class="text-gray-600">Identifica automáticamente el idioma del texto</p>
+                        <p class="text-xs text-gray-500 mt-1">Idiomas soportados: Español, Inglés, Francés, Italiano</p>
+                    </div>
+                </div>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Texto a analizar:</label>
+                        <textarea 
+                            id="languageText" 
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            rows="4"
+                            placeholder="Escribe aquí el texto para detectar su idioma...">Hello, how are you today? I hope you're having a wonderful day!</textarea>
+                    </div>
+                    
+                    <button 
+                        id="detectLanguageBtn" 
+                        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition duration-300">
+                        <span id="detectLanguageText">Detectar Idioma</span>
+                        <svg id="detectLanguageLoader" class="hidden loading w-4 h-4 inline ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                        </svg>
+                    </button>
+                    
+                    <div id="languageResult" class="hidden bg-gray-50 rounded-lg p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-medium text-gray-900">Idioma detectado:</span>
+                            <span id="detectedLanguage" class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm"></span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-600">Confianza:</span>
+                            <div class="flex items-center">
+                                <div class="w-20 bg-gray-200 rounded-full h-2 mr-2">
+                                    <div id="languageConfidence" class="bg-blue-600 h-2 rounded-full"></div>
+                                </div>
+                                <span id="languageConfidenceText" class="text-sm text-gray-600"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Spam Filter Module -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <div class="flex items-center mb-6">
+                    <div class="bg-red-100 p-3 rounded-lg mr-4">
+                        <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-900">Filtro de Spam</h3>
+                        <p class="text-gray-600">Clasifica mensajes como spam o legítimos</p>
+                        <p class="text-xs text-gray-500 mt-1">Detecta palabras clave en inglés y español: free/gratis, win/ganar, prize/premio, money/dinero, etc.</p>
+                    </div>
+                </div>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Mensaje a evaluar:</label>
+                        <textarea 
+                            id="spamText" 
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+                            rows="4"
+                            placeholder="Ingresa el mensaje para verificar si es spam...">WIN FREE MONEY NOW! Click here to claim your $1000 prize! Limited time offer!</textarea>
+                    </div>
+                    
+                    <button 
+                        id="checkSpamBtn" 
+                        class="w-full bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-md transition duration-300">
+                        <span id="checkSpamText">Verificar Spam</span>
+                        <svg id="checkSpamLoader" class="hidden loading w-4 h-4 inline ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                        </svg>
+                    </button>
+                    
+                    <div id="spamResult" class="hidden bg-gray-50 rounded-lg p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-medium text-gray-900">Clasificación:</span>
+                            <span id="spamClassification" class="px-3 py-1 rounded-full text-sm"></span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-600">Confianza:</span>
+                            <div class="flex items-center">
+                                <div class="w-20 bg-gray-200 rounded-full h-2 mr-2">
+                                    <div id="spamConfidence" class="h-2 rounded-full"></div>
+                                </div>
+                                <span id="spamConfidenceText" class="text-sm text-gray-600"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Wine Quality Module -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <div class="flex items-center mb-6">
+                    <div class="bg-purple-100 p-3 rounded-lg mr-4">
+                        <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-900">Calidad del Vino</h3>
+                        <p class="text-gray-600">Predice la calidad basada en características químicas</p>
+                        <p class="text-xs text-gray-500 mt-1">Rangos: Alcohol 8-18%, Acidez 0.1-2.0. Escala 1-10</p>
+                    </div>
+                </div>
+                
+                <div class="space-y-4">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Alcohol (%):</label>
+                            <input 
+                                type="number" 
+                                id="alcoholLevel"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                min="8" 
+                                max="18" 
+                                step="0.1"
+                                value="12.5"
+                                placeholder="8.0 - 18.0">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Acidez:</label>
+                            <input 
+                                type="number" 
+                                id="acidityLevel"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                min="0.1" 
+                                max="2.0" 
+                                step="0.1"
+                                value="0.7"
+                                placeholder="0.1 - 2.0">
+                        </div>
+                    </div>
+                    
+                    <button 
+                        id="predictWineBtn" 
+                        class="w-full bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-4 rounded-md transition duration-300">
+                        <span id="predictWineText">Predecir Calidad</span>
+                        <svg id="predictWineLoader" class="hidden loading w-4 h-4 inline ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                        </svg>
+                    </button>
+                    
+                    <div id="wineResult" class="hidden bg-gray-50 rounded-lg p-4">
+                        <div class="text-center mb-4">
+                            <div class="text-3xl font-bold text-purple-600 mb-1" id="wineScore">0</div>
+                            <div class="text-sm text-gray-600">Puntuación de Calidad (0-10)</div>
+                        </div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-medium text-gray-900">Categoría:</span>
+                            <span id="wineCategory" class="px-3 py-1 rounded-full text-sm"></span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-3">
+                            <div id="wineQualityBar" class="bg-purple-600 h-3 rounded-full transition-all duration-500"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- K-Means Clustering Module -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <div class="flex items-center mb-6">
+                    <div class="bg-green-100 p-3 rounded-lg mr-4">
+                        <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14-7l2 2-2 2m2-2a9 9 0 01-9 9M5 13l2-2-2-2m2 2a9 9 0 009-9"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-900">Clustering K-Means</h3>
+                        <p class="text-gray-600">Agrupa datos en clusters usando K-Means</p>
+                        <p class="text-xs text-gray-500 mt-1">K: 1-10 clusters, Puntos: 10-200. Genera datos sintéticos</p>
+                    </div>
+                </div>
+                
+                <div class="space-y-4">
+                    <div class="flex space-x-4">
+                        <div class="flex-1">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Número de Clusters (K):</label>
+                            <input 
+                                type="number" 
+                                id="kValue"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                                min="1" 
+                                max="10" 
+                                value="3">
+                        </div>
+                        <div class="flex-1">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Puntos de Datos:</label>
+                            <input 
+                                type="number" 
+                                id="dataPoints"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                                min="10" 
+                                max="200" 
+                                value="50">
+                        </div>
+                    </div>
+                    
+                    <div class="flex space-x-2">
+                        <button 
+                            id="generateDataBtn" 
+                            class="flex-1 bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-md transition duration-300">
+                            Generar Datos
+                        </button>
+                        <button 
+                            id="clusterBtn" 
+                            class="flex-1 bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-md transition duration-300">
+                            <span id="clusterText">Ejecutar Clustering</span>
+                            <svg id="clusterLoader" class="hidden loading w-4 h-4 inline ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    
+                    <div id="clusterCanvas">
+                        <canvas id="clusterVisualization" width="400" height="300" class="cluster-canvas w-full"></canvas>
+                    </div>
+                    
+                    <div id="clusterResult" class="hidden bg-gray-50 rounded-lg p-4">
+                        <div class="grid grid-cols-3 gap-4 text-center">
+                            <div>
+                                <div class="text-lg font-bold text-green-600" id="totalClusters">0</div>
+                                <div class="text-xs text-gray-600">Clusters</div>
+                            </div>
+                            <div>
+                                <div class="text-lg font-bold text-green-600" id="totalPoints">0</div>
+                                <div class="text-xs text-gray-600">Puntos</div>
+                            </div>
+                            <div>
+                                <div class="text-lg font-bold text-green-600" id="kUsed">0</div>
+                                <div class="text-xs text-gray-600">K Usado</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- About Modal -->
+    <div id="aboutModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-xl p-8 max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-2xl font-bold text-gray-900">👨‍💻 Acerca del Desarrollador</h2>
+                <button id="closeAboutModal" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+            </div>
+            
+            <div class="space-y-6">
+                <div class="flex items-center space-x-4">
+                    <img src="/public/icons/hospinal-logo.png" alt="Oscar Hospinal Logo" class="w-16 h-16 rounded-full object-cover">
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-900">Oscar David Hospinal R.</h3>
+                        <p class="text-purple-600 font-medium">Master's Degree in Information Technology and Management</p>
+                        <p class="text-gray-600">Creator & Developer</p>
+                    </div>
+                </div>
+                
+                <div class="bg-gray-50 rounded-lg p-6">
+                    <h4 class="text-lg font-semibold mb-3 text-gray-900">🎯 Sobre el Proyecto</h4>
+                    <p class="text-gray-700 mb-4">
+                        PHP InsightLab ML Hub es una plataforma de Machine Learning desarrollada con PHP-ML, 
+                        diseñada para demostrar capacidades de análisis avanzado con inteligencia artificial 
+                        y procesamiento de datos.
+                    </p>
+                    
+                    <h5 class="font-semibold text-gray-900 mb-2">Características Principales:</h5>
+                    <ul class="list-disc list-inside text-gray-700 space-y-1 mb-4">
+                        <li>🔤 Detección Automática de Idiomas</li>
+                        <li>🛡️ Filtrado Inteligente de Spam</li>
+                        <li>🍷 Predicción de Calidad del Vino</li>
+                        <li>📊 Clustering K-Means Interactivo</li>
+                    </ul>
+                    
+                    <h5 class="font-semibold text-gray-900 mb-2">Tecnologías Utilizadas:</h5>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">PHP</span>
+                        <span class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm">PHP-ML</span>
+                        <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">JavaScript</span>
+                        <span class="bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full text-sm">Tailwind CSS</span>
+                        <span class="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm">Chart.js</span>
+                        <span class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm">Machine Learning</span>
+                    </div>
+                </div>
+                
+                <div class="bg-gradient-to-r from-purple-50 to-indigo-50 rounded-lg p-6">
+                    <h4 class="text-lg font-semibold mb-3 text-gray-900">📧 Información de Contacto</h4>
+                    <div class="space-y-2">
+                        <a href="mailto:oscardavid.hospinal@uc.cl" class="flex items-center text-gray-700 hover:text-purple-600 transition">
+                            <span class="mr-2">📧</span> oscardavid.hospinal@uc.cl
+                        </a>
+                        <a href="https://www.linkedin.com/in/oscardavidhospinal/" target="_blank" class="flex items-center text-gray-700 hover:text-blue-600 transition">
+                            <span class="mr-2">💼</span> LinkedIn
+                        </a>
+                        <a href="https://github.com/DavidHospinal" target="_blank" class="flex items-center text-gray-700 hover:text-gray-900 transition">
+                            <span class="mr-2">🔗</span> GitHub
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- License Modal -->
+    <div id="licenseModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-xl p-8 max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-2xl font-bold text-gray-900">📄 Licencia MIT</h2>
+                <button id="closeLicenseModal" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+            </div>
+            
+            <div class="space-y-6">
+                <div class="bg-gray-50 rounded-lg p-6">
+                    <p class="text-gray-700 mb-4">
+                        Derechos de autor (c) 2025 Oscar David Hospinal R.
+                    </p>
+                    <p class="text-gray-700 mb-4">
+                        Se concede permiso por la presente, sin cargo alguno, a cualquier persona que obtenga una copia 
+                        de este software y los archivos de documentación asociados (el "Software"), para tratar en el 
+                        Software sin restricciones, incluidos, entre otros, los derechos usar, copiar, modificar, 
+                        fusionar, publicar, distribuir, sublicenciar y/o vender copias del Software y permitir que las 
+                        personas a quienes se dirige el Software equipado para ello, sujeto a las siguientes condiciones:
+                    </p>
+                    <p class="text-gray-700 mb-4">
+                        El aviso de derechos de autor anterior y este aviso de permiso se incluirán en todas 
+                        copias o partes sustanciales del Software.
+                    </p>
+                    <p class="text-gray-700">
+                        EL SOFTWARE SE PROPORCIONA "TAL CUAL", SIN GARANTÍA DE NINGÚN TIPO, EXPRESA O 
+                        IMPLÍCITAS, INCLUYENDO, ENTRE OTRAS, LAS GARANTÍAS DE COMERCIABILIDAD, IDONEIDAD PARA UN 
+                        PROPÓSITO PARTICULAR Y NO INFRACCIÓN. EN NINGÚN CASO EL LOS AUTORES O TITULARES DE LOS 
+                        DERECHOS DE AUTOR NO SERÁN RESPONSABLES DE CUALQUIER RECLAMACIÓN, DAÑO U OTROS 
+                        RESPONSABILIDAD, YA SEA EN UNA ACCIÓN CONTRACTUAL, EXTRACONTRACTUAL O DE OTRO MODO, QUE 
+                        SURJA DE, FUERA DE O EN CONEXIÓN CON EL SOFTWARE O EL USO U OTRAS OPERACIONES EN EL SOFTWARE.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // Variables globales
+        let currentData = [];
+        let counters = { language: 0, spam: 0, wine: 0, cluster: 0 };
+
+        // API Base URL - ajusta según tu configuración
+        const API_BASE = '/backend/api';
+
+        // Utility functions
+        function showLoader(buttonId, textId, loaderId) {
+            document.getElementById(buttonId).disabled = true;
+            document.getElementById(textId).classList.add('opacity-50');
+            document.getElementById(loaderId).classList.remove('hidden');
+        }
+
+        function hideLoader(buttonId, textId, loaderId) {
+            document.getElementById(buttonId).disabled = false;
+            document.getElementById(textId).classList.remove('opacity-50');
+            document.getElementById(loaderId).classList.add('hidden');
+        }
+
+        function updateCounter(type) {
+            counters[type]++;
+            document.getElementById(`${type}Count`).textContent = counters[type];
+        }
+
+        // Language Detection
+        document.getElementById('detectLanguageBtn').addEventListener('click', async () => {
+            const text = document.getElementById('languageText').value.trim();
+            if (!text) return;
+
+            showLoader('detectLanguageBtn', 'detectLanguageText', 'detectLanguageLoader');
+
+            try {
+                const response = await fetch(`${API_BASE}/classification.php`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'detect_language', text })
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    document.getElementById('detectedLanguage').textContent = result.language;
+                    document.getElementById('languageConfidence').style.width = `${result.confidence * 100}%`;
+                    document.getElementById('languageConfidenceText').textContent = `${Math.round(result.confidence * 100)}%`;
+                    document.getElementById('languageResult').classList.remove('hidden');
+                    updateCounter('language');
+                } else {
+                    alert('Error: ' + result.error);
+                }
+            } catch (error) {
+                alert('Error conectando con la API: ' + error.message);
+            }
+
+            hideLoader('detectLanguageBtn', 'detectLanguageText', 'detectLanguageLoader');
+        });
+
+        // Spam Filter
+        document.getElementById('checkSpamBtn').addEventListener('click', async () => {
+            const text = document.getElementById('spamText').value.trim();
+            if (!text) return;
+
+            showLoader('checkSpamBtn', 'checkSpamText', 'checkSpamLoader');
+
+            try {
+                const response = await fetch(`${API_BASE}/classification.php`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'filter_spam', text })
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    const isSpam = result.is_spam;
+                    const classification = document.getElementById('spamClassification');
+                    const confidence = document.getElementById('spamConfidence');
+                    
+                    classification.textContent = isSpam ? 'SPAM' : 'LEGÍTIMO';
+                    classification.className = `px-3 py-1 rounded-full text-sm ${isSpam ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}`;
+                    
+                    confidence.style.width = `${result.confidence * 100}%`;
+                    confidence.className = `h-2 rounded-full ${isSpam ? 'bg-red-600' : 'bg-green-600'}`;
+                    
+                    document.getElementById('spamConfidenceText').textContent = `${Math.round(result.confidence * 100)}%`;
+                    document.getElementById('spamResult').classList.remove('hidden');
+                    updateCounter('spam');
+                } else {
+                    alert('Error: ' + result.error);
+                }
+            } catch (error) {
+                alert('Error conectando con la API: ' + error.message);
+            }
+
+            hideLoader('checkSpamBtn', 'checkSpamText', 'checkSpamLoader');
+        });
+
+        // Wine Quality Prediction
+        document.getElementById('predictWineBtn').addEventListener('click', async () => {
+            const alcohol = parseFloat(document.getElementById('alcoholLevel').value);
+            const acidity = parseFloat(document.getElementById('acidityLevel').value);
+
+            if (!alcohol || !acidity) return;
+
+            showLoader('predictWineBtn', 'predictWineText', 'predictWineLoader');
+
+            try {
+                const response = await fetch(`${API_BASE}/regression.php`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ alcohol, acidity })
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    document.getElementById('wineScore').textContent = result.quality_score;
+                    document.getElementById('wineCategory').textContent = result.category;
+                    
+                    const categoryColors = {
+                        'Excelente': 'bg-green-100 text-green-800',
+                        'Buena': 'bg-blue-100 text-blue-800',
+                        'Regular': 'bg-yellow-100 text-yellow-800',
+                        'Pobre': 'bg-red-100 text-red-800'
+                    };
+                    
+                    document.getElementById('wineCategory').className = `px-3 py-1 rounded-full text-sm ${categoryColors[result.category] || 'bg-gray-100 text-gray-800'}`;
+                    document.getElementById('wineQualityBar').style.width = `${(result.quality_score / result.max_score) * 100}%`;
+                    document.getElementById('wineResult').classList.remove('hidden');
+                    updateCounter('wine');
+                } else {
+                    alert('Error: ' + result.error);
+                }
+            } catch (error) {
+                alert('Error conectando con la API: ' + error.message);
+            }
+
+            hideLoader('predictWineBtn', 'predictWineText', 'predictWineLoader');
+        });
+
+        // K-Means Clustering
+        document.getElementById('generateDataBtn').addEventListener('click', async () => {
+            const count = parseInt(document.getElementById('dataPoints').value);
+
+            try {
+                const response = await fetch(`${API_BASE}/clustering.php`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'generate_data', count })
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    currentData = result.points;
+                    drawPoints(currentData);
+                } else {
+                    alert('Error: ' + result.error);
+                }
+            } catch (error) {
+                alert('Error conectando con la API: ' + error.message);
+            }
+        });
+
+        document.getElementById('clusterBtn').addEventListener('click', async () => {
+            if (currentData.length === 0) {
+                alert('Primero genera datos');
+                return;
+            }
+
+            const k = parseInt(document.getElementById('kValue').value);
+            showLoader('clusterBtn', 'clusterText', 'clusterLoader');
+
+            try {
+                const response = await fetch(`${API_BASE}/clustering.php`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'cluster', points: currentData, k })
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    drawClusters(result.clusters);
+                    document.getElementById('totalClusters').textContent = result.total_clusters;
+                    document.getElementById('totalPoints').textContent = result.total_points;
+                    document.getElementById('kUsed').textContent = result.k;
+                    document.getElementById('clusterResult').classList.remove('hidden');
+                    updateCounter('cluster');
+                } else {
+                    alert('Error: ' + result.error);
+                }
+            } catch (error) {
+                alert('Error conectando con la API: ' + error.message);
+            }
+
+            hideLoader('clusterBtn', 'clusterText', 'clusterLoader');
+        });
+
+        // Canvas drawing functions
+        function drawPoints(points) {
+            const canvas = document.getElementById('clusterVisualization');
+            const ctx = canvas.getContext('2d');
+            const rect = canvas.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#3B82F6';
+
+            points.forEach(point => {
+                const x = (point.x / 800) * canvas.width;
+                const y = (point.y / 800) * canvas.height;
+                ctx.beginPath();
+                ctx.arc(x, y, 3, 0, 2 * Math.PI);
+                ctx.fill();
+            });
+        }
+
+        function drawClusters(clusters) {
+            const canvas = document.getElementById('clusterVisualization');
+            const ctx = canvas.getContext('2d');
+            const rect = canvas.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const colors = ['#EF4444', '#10B981', '#3B82F6', '#F59E0B', '#8B5CF6', '#EC4899', '#14B8A6', '#F97316'];
+
+            clusters.forEach((cluster, index) => {
+                ctx.fillStyle = colors[index % colors.length];
+                
+                cluster.points.forEach(point => {
+                    const x = (point.x / 800) * canvas.width;
+                    const y = (point.y / 800) * canvas.height;
+                    ctx.beginPath();
+                    ctx.arc(x, y, 4, 0, 2 * Math.PI);
+                    ctx.fill();
+                });
+            });
+        }
+
+        // Modal functions
+        function showModal(modalId) {
+            document.getElementById(modalId).classList.remove('hidden');
+        }
+
+        function hideModal(modalId) {
+            document.getElementById(modalId).classList.add('hidden');
+        }
+
+        // Modal event listeners
+        document.getElementById('aboutBtn').addEventListener('click', () => showModal('aboutModal'));
+        document.getElementById('licenseBtn').addEventListener('click', () => showModal('licenseModal'));
+        document.getElementById('closeAboutModal').addEventListener('click', () => hideModal('aboutModal'));
+        document.getElementById('closeLicenseModal').addEventListener('click', () => hideModal('licenseModal'));
+
+        // Close modals when clicking outside
+        document.getElementById('aboutModal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('aboutModal')) {
+                hideModal('aboutModal');
+            }
+        });
+
+        document.getElementById('licenseModal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('licenseModal')) {
+                hideModal('licenseModal');
+            }
+        });
+
+        // Initialize with sample data
+        document.addEventListener('DOMContentLoaded', () => {
+            // Generate initial clustering data
+            document.getElementById('generateDataBtn').click();
+        });
+    </script>
+</body>
+</html>
