@@ -3,11 +3,24 @@ declare(strict_types=1);
 
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: POST');
+header('Access-Control-Allow-Methods: POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
 
+// Handle preflight requests
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    exit(0);
+}
+
+// Error reporting for debugging
+error_reporting(E_ALL);
+ini_set('display_errors', 0);
+
 try {
-    require_once __DIR__ . '/../../vendor/autoload.php';
+    if (file_exists(__DIR__ . '/../../vendor/autoload.php')) {
+        require_once __DIR__ . '/../../vendor/autoload.php';
+    } else {
+        throw new Exception('Composer autoloader not found');
+    }
 } catch (Exception $e) {
     echo json_encode(['success' => false, 'error' => 'Failed to load dependencies: ' . $e->getMessage()]);
     exit;
