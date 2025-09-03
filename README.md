@@ -247,3 +247,5 @@ Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) par
 ---
 
 ⭐ **¡Dale una estrella si este proyecto te ayudó!** ⭐
+
+<img width="699" height="416" alt="hospinal-systems-logo" src="https://github.com/user-attachments/assets/aef101b6-d25a-4c29-88db-c8b578e88a7c" />
