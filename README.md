@@ -1,5 +1,8 @@
 # PHP InsightLab ML Hub
 
+![Animation-AL002](https://github.com/user-attachments/assets/bc2f97db-6dd8-481b-acc6-f77ac5ae1612)
+
+
 Una plataforma web interactiva que demuestra algoritmos de Machine Learning usando PHP-ML, con frontend moderno y APIs backend.
 
 ![PHP Version](https://img.shields.io/badge/PHP-8.1%2B-blue)
